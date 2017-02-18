@@ -151,9 +151,9 @@ public:
 
     // Get an existing entry from the cache
 
-    boost::optional<Value> Get(const Key& key)
+    bool Get(const Key& key, Value& value)
     {
-        boost::optional<Value> optValue;
+        
         auto it = m_cache.template get<0>().find(key);
         if (it != m_cache.template get<0>().end())
         {
@@ -161,10 +161,11 @@ public:
             if (it->IsValid(now))
             {
                 it->UpdateLastUsageTime();
-                optValue = it->m_value;
+                value = it->m_value;
+		return true;
             }
         }
-        return optValue;
+        return false;
     }
 
     int Expire(unsigned int limit = 10000)

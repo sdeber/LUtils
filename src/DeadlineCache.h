@@ -7,7 +7,6 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/mem_fun.hpp>
 #include <boost/multi_index/composite_key.hpp>
-#include <boost/optional.hpp>
 #include <boost/chrono.hpp>
 #include <boost/utility.hpp>
 #include "CacheSink.h"
@@ -155,19 +154,19 @@ public:
 
     // Get an existing entry from the cache
 
-    boost::optional<Value> Get(const Key& key)
+    bool Get(const Key& key, Value& value)
     {
-        boost::optional<Value> optValue;
         auto it = m_cache.template get<0>().find(key);
         if (it != m_cache.template get<0>().end())
         {
             boost::chrono::steady_clock::time_point now = boost::chrono::steady_clock::now();
             if (it->IsValid(now))
             {
-                optValue = it->m_value;
+                value = it->m_value;
+		return true;
             }
         }
-        return optValue;
+        return false;
     }
     // Reinsert an existing entry. 
 
