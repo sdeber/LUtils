@@ -15,8 +15,8 @@ template <typename Clock, typename Duration> class TLeakyBucket : public LeakyBu
 {
 private:
     const int32_t m_limit;
-    typename Clock::rep m_updateInterval;
     std::atomic<int32_t> m_currentCount;
+    typename Clock::rep m_updateInterval;
     std::atomic<typename Clock::rep> m_nextUpdateTime;
 
     void Refresh()
@@ -36,19 +36,32 @@ private:
 
 public:
 
-    TLeakyBucket(int32_t limit, Duration d) : m_limit(limit) 
+    TLeakyBucket(int32_t limit, Duration d, bool align_from_epoch = false) : m_limit(limit) 
     {
         m_currentCount.store(m_limit);
         auto duration = std::chrono::duration_cast<typename Clock::duration > (d);
         m_updateInterval = duration.count();
-        auto now = Clock::now();
-        typename Clock::time_point nextTime = now + duration;
-        m_nextUpdateTime.store(nextTime.time_since_epoch().count());
+	auto now = Clock::now();
+	typename Clock::rep newVal;
+	if(align_from_epoch)
+	{
+	    typename Clock::rep now_rep = now.time_since_epoch().count();
+	    typename Clock::rep remainder = now_rep % m_updateInterval;
+	    newVal = now_rep + m_updateInterval - remainder;
+	    m_nextUpdateTime.store(newVal);   
+	}
+	else
+	{    
+	    typename Clock::time_point nextTime = now + duration;
+	    newVal = nextTime.time_since_epoch().count();
+	}
+
+	m_nextUpdateTime.store(newVal);
     }
 
     virtual int32_t GetBucket()
     {
-        this->template Refresh();
+        Refresh();
         int currentVal = m_currentCount.load();
         if (currentVal > 0)
             /* It is still possible that fetch_sub returns a negative value,
