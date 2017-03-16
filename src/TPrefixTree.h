@@ -13,10 +13,10 @@ private:
 
 public:
     
-    bool SearchPrefix(const String& key, ValueType& value) 
+    bool SearchPrefix(const String& key, ValueType& value) const
     {
 	void * index;
-	NodeType * pNode = &m_root, * pNext = nullptr;
+	const NodeType * pNode = &m_root, * pNext = nullptr;
 	typename String::const_iterator it = key.cbegin(), end = key.cend();
 
 	for(; it != end; ++it)
@@ -134,10 +134,10 @@ public:
 		
     }
 
-    bool Search(const String& key, ValueType& value) 
+    bool Search(const String& key, ValueType& value) const
     {
 	void * index;
-	NodeType * pNode = &m_root, * pNext = nullptr;
+	const NodeType * pNode = &m_root, * pNext = nullptr;
       
 	typename String::const_iterator it = key.cbegin(), end = key.cend();
 	for(; it != end; ++it)
@@ -172,10 +172,10 @@ public:
 	return false;	
     }
 
-    bool SearchLongestPrefix(const String& key, ValueType& value) 
+    bool SearchLongestPrefix(const String& key, ValueType& value) const
     {
 	void * index;
-	NodeType * pCurrent = &m_root, *pNext = nullptr, * pResult = nullptr;
+	const NodeType * pCurrent = &m_root, *pNext = nullptr, * pResult = nullptr;
 	typename String::const_iterator it = key.cbegin(), end = key.cend();
 
 	for(; it != end; ++it)
@@ -311,9 +311,9 @@ private:
 
 public:
     
-    bool SearchPrefix(const String& key) 
+    bool SearchPrefix(const String& key) const
     {
-	NodeType * pNode = &m_root, * pNext = nullptr;
+	const NodeType * pNode = &m_root, * pNext = nullptr;
 	typename String::const_iterator it = key.cbegin(), end = key.cend();
 
 	for(; it != end; ++it)
@@ -407,10 +407,10 @@ public:
 		
     }
 
-    bool Search(const String& key) 
+    bool Search(const String& key) const
     {
 	void * index;
-	NodeType * pNode = &m_root, * pNext = nullptr;
+	const NodeType * pNode = &m_root, * pNext = nullptr;
       
 	typename String::const_iterator it = key.cbegin(), end = key.cend();
 	for(; it != end; ++it)
@@ -438,9 +438,9 @@ public:
 	return false;	
     }
 
-    bool SearchLongestPrefix(const String& key) 
+    bool SearchLongestPrefix(const String& key) const
     {
-	NodeType * pCurrent = &m_root, *pNext = nullptr, * pResult = nullptr;
+	const NodeType * pCurrent = &m_root, *pNext = nullptr, * pResult = nullptr;
 	typename String::const_iterator it = key.cbegin(), end = key.cend();
 
 	for(; it != end; ++it)

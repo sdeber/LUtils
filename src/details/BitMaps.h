@@ -12,13 +12,19 @@ public:
     
     int set(unsigned int ch)
     {
+	if(ch > 15)
+	    return -1;
+	
 	uint16_t tmp = (uint16_t)1 << ch; 
 	m_map |= tmp;
 	return __builtin_popcount(m_map & (tmp - 1));
     }
 
-    int find(unsigned int ch)
+    int find(unsigned int ch) const
     {
+	if(ch > 15)
+	    return -1;
+	
 	uint16_t tmp = (uint16_t)1 << ch; 
 	if(m_map & tmp)
 	{
@@ -30,6 +36,9 @@ public:
     
     int unset(unsigned int ch)
     {
+	if(ch > 15)
+	    return -1;
+	
 	int index = find(ch);
 	if(index != -1)
 	{
@@ -55,13 +64,19 @@ public:
     
     int set(unsigned int ch)
     {
+	if(ch > 31)
+	    return -1;
+	
 	uint32_t tmp = (uint32_t)1 << ch;
 	m_map |= tmp;
 	return __builtin_popcount(m_map & (tmp - 1));
     }
 
-    int find(unsigned int ch)
+    int find(unsigned int ch) const
     {
+	if(ch > 31)
+	    return -1;
+	
 	uint32_t tmp = (uint32_t)1 << ch;
 	if(m_map & tmp)
 	{
@@ -73,6 +88,9 @@ public:
     
     int unset(unsigned int ch)
     {
+	if(ch > 31)
+	    return -1;
+	
 	int index = find(ch);
 	if(index != -1)
 	{
@@ -99,13 +117,19 @@ public:
     
     int set(unsigned int ch)
     {
+	if(ch > 63)
+	    return -1;
+	
 	uint64_t tmp = (uint64_t)1 << ch;
 	m_map |= tmp;
 	return __builtin_popcountll(m_map & (tmp - 1));
     }
 
-    int find(unsigned int ch)
+    int find(unsigned int ch) const
     {
+	if(ch > 63)
+	    return -1;
+	
 	uint64_t tmp = (uint64_t)1 << ch;
 	if(m_map & tmp)
 	{
@@ -117,6 +141,9 @@ public:
     
     int unset(unsigned int ch)
     {
+	if(ch > 63)
+	    return -1;
+	
 	int index = find(ch);
 	if(index != -1)
 	{
@@ -156,6 +183,9 @@ struct BitMap128
 
     int set(unsigned int ch)
     {
+	if(ch > 127)
+	    return -1;
+	
         int idx = (ch >> 5); // word index
         ch &= 0x1f;
         uint32_t map = bitmap[idx].BitMap;
@@ -176,6 +206,9 @@ struct BitMap128
 
     int unset(unsigned int ch)
     {
+	if(ch > 127)
+	    return -1;
+	
         int idx = (ch >> 5); // word index
         ch &= 0x1f;
         uint32_t map = bitmap[idx].BitMap;
@@ -192,8 +225,11 @@ struct BitMap128
         return old_index;
     }
 
-    int find(unsigned int ch)
+    int find(unsigned int ch) const
     {
+	if(ch > 127)
+	    return -1;
+	
         int idx = (ch >> 5); // word index
         ch &= 0x1f;
         uint32_t map = bitmap[idx].BitMap;
@@ -227,6 +263,9 @@ struct BitMap128_
 
     int set(unsigned int ch)
     {
+	if(ch > 127)
+	    return -1;
+	
         int idx = (ch >> 6); // word index
         ch &= 0x3f;
 	uint64_t tmp = (uint64_t)1 << ch;
@@ -247,6 +286,9 @@ struct BitMap128_
 
     int unset(unsigned int ch)
     {
+	if(ch > 127)
+	    return -1;
+	
 	int oldIndex = find(ch);
         if(oldIndex != -1)
 	{
@@ -266,8 +308,11 @@ struct BitMap128_
 	return oldIndex;
     }
 
-    int find(unsigned int ch)
+    int find(unsigned int ch) const
     {
+	if(ch > 127)
+	    return -1;
+	
 	int idx = (ch >> 6); // word index
         ch &= 0x3f;
 	uint64_t tmp = (uint64_t)1 << ch; 
@@ -313,6 +358,9 @@ struct BitMap256
 
     int set(unsigned int ch)
     {
+	if(ch > 255)
+	    return -1;
+	
         int idx = (ch >> 5); // word index
         ch &= 0x1f;
         uint32_t map = bitmap[idx].BitMap;
@@ -333,6 +381,9 @@ struct BitMap256
 
     int unset(unsigned int ch)
     {
+	if(ch > 255)
+	    return -1;
+	
         int idx = (ch >> 5); // word index
         ch &= 0x1f;
         uint32_t map = bitmap[idx].BitMap;
@@ -350,8 +401,11 @@ struct BitMap256
         return old_index;
     }
 
-    int find(unsigned int ch)
+    int find(unsigned int ch) const
     {
+	if(ch > 255)
+	    return -1;
+	
         int idx = (ch >> 5); // word index
         ch &= 0x1f;
         uint32_t map = bitmap[idx].BitMap;

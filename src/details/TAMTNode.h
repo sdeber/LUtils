@@ -1,7 +1,7 @@
 #pragma once
 #include "AMTCommon.h"
 #include "BitMaps.h"
-#include "String.h"
+#include "string.h"
 /**
    A node can have four possible states: 
    1. It carries data only. 
@@ -76,7 +76,7 @@ private:
 	return true;
     }
 
-    TAMTNode * _findChild(unsigned int ch)
+    TAMTNode * _findChild(unsigned int ch) const
     {
 	int index = m_nodeIdx.find(ch);
 	if(index != -1)
@@ -219,7 +219,7 @@ private:
 	return true;
     }
 
-    char * getTail(int& len)
+    char * getTail(int& len) const
     {
 	len = m_tailSize;
 	return (char*)AMTNODE_GET_INDEX(pIndexBase);	
@@ -256,7 +256,7 @@ public:
     }
 
     
-    TAMTNode * findChild(const Character& c)
+    TAMTNode * findChild(const Character& c) const
     {
 	return _findChild(Alphabet::to_index(c));
     }
@@ -281,7 +281,7 @@ public:
 	return setTail(tailArray, actualSize);
     }
 
-    int compareTail(typename String::const_iterator begin, typename String::const_iterator end)
+    int compareTail(typename String::const_iterator begin, typename String::const_iterator end) const
     {
 	if(hasTail())
 	{
@@ -395,7 +395,7 @@ public:
 	pIndexBase = nullptr;
     }
 
-    void getTailData(void*& data)
+    void getTailData(void*& data) const
     {
 	memcpy(&data, ((char*)AMTNODE_GET_INDEX(pIndexBase)) + m_tailSize, sizeof(void*)); 	
     }
@@ -484,7 +484,7 @@ public:
 
         
     // Get the data carried by the node
-    bool getData(void *& result)
+    bool getData(void *& result) const
     {  
 	if(isLeaf())
 	{
