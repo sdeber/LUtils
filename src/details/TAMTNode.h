@@ -105,7 +105,7 @@ private:
 	    pNewNode = new (pIndexBase) TAMTNode;
 	    pNewNode->m_ch = static_cast<uint8_t>(ch);
 	    if(dataSize > 0)
-		memcpy((TAMTNode*)pIndexBase + 1, &pOldBase,dataSize);
+		memcpy((TAMTNode*)pIndexBase + 1, AMTNODE_GET_INDEX(pOldBase),dataSize);
 	    AMTNODE_COPY_FLAGS(pOldBase, pIndexBase);
 	    delete[] (char*)AMTNODE_GET_INDEX(pOldBase);
 	    return pNewNode;
@@ -307,11 +307,12 @@ public:
     
     bool hasTail() const
     {
-	return !isLeaf() && (AMTNODE_HAS_TAIL(pIndexBase) > 0);
+	return AMTNODE_HAS_TAIL(pIndexBase) > 0;
     }
 
     void flattenTail(typename String::const_iterator it, typename String::const_iterator end, bool hasData, void * data)
     {
+
 	// The tail does not match the remaining key exactly.
 	void * oldData;
 	TAMTNode * pCurrentNode = this;
@@ -322,7 +323,7 @@ public:
 	int k = 0;
 	
 	if(hasData)
-	    oldData = *((void**)(&pOldBase[len]));
+	    oldData = *((void**)(pOldBase + len));
 
 	for(; it != end && k < len; ++it, ++k)
 	{
@@ -365,18 +366,11 @@ public:
 	    else
 	    {
 			   
-		if(k < len)
-		{
-		    if(hasData)
-			pChildNodeForOldTail->setTail((uint8_t*)pOldBase+k, len - k, oldData);
-		    else
-			pChildNodeForOldTail->setTail((uint8_t*)pOldBase+k, len - k);
-		}
+		if(hasData)
+		    pChildNodeForOldTail->setTail((uint8_t*)pOldBase+k, len - k, oldData);
 		else
-		{   
-		    pChildNodeForOldTail->setLeaf(hasData, oldData);
-		}
-		       
+		    pChildNodeForOldTail->setTail((uint8_t*)pOldBase+k, len - k);
+			       
 	    }
 	}
 	else
@@ -468,7 +462,7 @@ public:
 	else
 	{
 	    // The node has children.
-	    TAMTNode * pNode = static_cast<TAMTNode*>(pIndexBase);
+	    TAMTNode * pNode = static_cast<TAMTNode*>((AMTNODE_GET_INDEX(pIndexBase)));
 	
 	    // It has children
 	    for(int i = 0; i < m_nodeCount; ++i)
@@ -476,7 +470,7 @@ public:
 		pNode[i].clear();
 	    }
 	
-	    delete[] ((char*)pIndexBase);
+	    delete[] ((char*)AMTNODE_GET_INDEX(pIndexBase));
 	}
 	m_nodeCount = 0;
 	pIndexBase = nullptr;
@@ -490,15 +484,19 @@ public:
 	{
 	    if(m_nodeCount == 0)
 	    {
-		result = pIndexBase;
+		// The node contains no other children or tail, only the data presents. 
+		result = *((void **)AMTNODE_GET_INDEX(pIndexBase));	
+		 
 	    }
 	    else if(!AMTNODE_HAS_TAIL(pIndexBase))
 	    {
-		memcpy(&result, ((char*)pIndexBase) + sizeof(TAMTNode)*m_nodeCount, sizeof(void*)); 
+		// The node has children, hence it has no tail.
+		memcpy(&result, ((char*)AMTNODE_GET_INDEX(pIndexBase)) + sizeof(TAMTNode)*m_nodeCount, sizeof(void*)); 
 	    }
 	    else
 	    {
-		// Support for tail compression. TODO
+		// It has a tail.
+		memcpy(&result, ((char*)AMTNODE_GET_INDEX(pIndexBase)) + m_nodeCount, sizeof(void*)); 
 	    }
 	    return true;
 	}
@@ -509,15 +507,24 @@ public:
     // Clear the data carried by this node. 
     void clearData()
     {
-	if(isLeaf())
+	if(AMTNODE_HAS_DATA(pIndexBase))
 	{
-	    AMTNODE_UNSET_LEAF(pIndexBase);
+	    AMTNODE_UNSET_DATA(pIndexBase);
 	    if(m_nodeCount != 0)
 	    {
-		void * pOldBase = pIndexBase;
-		pIndexBase = new char[sizeof(TAMTNode)*m_nodeCount];
-		memcpy(pIndexBase, pOldBase,sizeof(TAMTNode)*m_nodeCount);
-		delete[] (char*)pOldBase;
+		void * pOldBase = AMTNODE_GET_INDEX(pIndexBase);
+		// The node either has children or a tail
+		if(AMTNODE_HAS_TAIL(pIndexBase))
+		{
+		    delete[] (char*)pOldBase;
+		    pIndexBase = nullptr;
+		}
+		else
+		{
+		    pIndexBase = new char[sizeof(TAMTNode)*m_nodeCount];
+		    memcpy(pIndexBase, pOldBase,sizeof(TAMTNode)*m_nodeCount);
+		}
+		
 	    }
 	    else
 	    {

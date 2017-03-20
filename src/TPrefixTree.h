@@ -81,8 +81,9 @@ public:
 	    // All characters of the key have been consumed.
 	    if(pCurrentNode->isLeaf())
 	    {
-		void * data;
+		void * data = nullptr;
 		pCurrentNode->getData(data);
+	       
 		m_values.erase(m_values.begin() + (uint64_t)data);
 	    }
 	    
@@ -236,13 +237,7 @@ public:
 	    {
 		if(pCurrent->compareTail(it, end) == 0)
 		{
-		    if(pDeletionPoint == nullptr)
-		    {
-			deleteChar = it;
-			pDeletionPoint = pCurrent;   		    
-		    }
-
-		    pDeletionPoint->deleteChild(*deleteChar);
+		    pCurrent->clearTail();
 		    return true;
 		}
 		
@@ -251,17 +246,6 @@ public:
 	    else
 	    {
 		auto next_it = it + 1;
-		if(pCurrent->compareTail(next_it, end) == 0)
-		{
-		    if(pDeletionPoint == nullptr)
-		    {
-			deleteChar = it;
-			pDeletionPoint = pCurrent;   		    
-		    }
-
-		    pDeletionPoint->deleteChild(*deleteChar);
-		    return true;
-		}
 		
 		if(pNext->m_nodeCount == 1 && !pNext->isLeaf())
 		{
