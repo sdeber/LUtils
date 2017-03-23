@@ -1,29 +1,20 @@
 * Lin's Utility library
 
   This library contains a set of data structures, algorithms that I found to be useful in many different projects. So I decided to rewrite those code that I developped to make them generic enough to be potentially used in any projects.
-
+  
 * Current contents
-
-** LRU cache
-
-** Deadline cache
-
-** A Prefix tree 
-   The trie can be used to index strings of any alphabet whose size is less than 256. It is fast and memory efficient.
-
-** A data classifier
-   It can be used to find "similar" data segements in a stream. 
+  1. LRU cache
+  2. Deadline cache
+  3. A Prefix tree
+  4. A data classifier
+  5. A lock-free leaky bucket counter
 
 * TODOs
 
-** Concurrent B-Tree
-
-** Suffix Tree
-
-** Ternary Tree
-
-** Data classifier by using levenshtein automaton 
-
-** A cache framework that allow uses to define their own index algorithms and expire policies.
-
-** More documentations (The hardest work for me since I hate it!)
+  1. Concurrent B-Tree
+  2. Suffix Tree
+  3. HMAP table
+  4. Ternary Tree
+  5. Data classifier by using levenshtein automation
+  6. A cache framework that allow uses to define their own index algorithms and expire policies.
+  7. More documentations (The hardest work for me since I hate it!)
