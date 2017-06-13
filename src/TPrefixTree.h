@@ -45,6 +45,7 @@ public:
 		{
 		    pNode->getTailData(index);
 		    value = m_values[(uint64_t)index];
+		    return true;
 		}
 		else
 		    return false;
@@ -237,7 +238,15 @@ public:
 	    {
 		if(pCurrent->compareTail(it, end) == 0)
 		{
-		    pCurrent->clearTail();
+		    if(pDeletionPoint != nullptr)
+		    {
+			pDeletionPoint->deleteChild(*deleteChar);	    
+		    }
+		    else
+		    {
+			pCurrent->clearTail();
+		    }
+
 		    return true;
 		}
 		
@@ -479,13 +488,15 @@ public:
 	    {
 		if(pCurrent->compareTail(it, end) == 0)
 		{
-		    if(pDeletionPoint == nullptr)
+		    if(pDeletionPoint != nullptr)
 		    {
-			deleteChar = it;
-			pDeletionPoint = pCurrent;   		    
+			pDeletionPoint->deleteChild(*deleteChar);	    
+		    }
+		    else
+		    {
+			pCurrent->clearTail();
 		    }
 
-		    pDeletionPoint->deleteChild(*deleteChar);
 		    return true;
 		}
 		
@@ -494,6 +505,7 @@ public:
 	    else
 	    {
 		auto next_it = it + 1;
+		/*
 		if(pNext->compareTail(next_it, end) == 0)
 		{
 		    if(pDeletionPoint == nullptr)
@@ -505,7 +517,7 @@ public:
 		    pDeletionPoint->deleteChild(*deleteChar);
 		    return true;
 		}
-		
+		*/
 		if(pNext->m_nodeCount == 1 && !pNext->isLeaf())
 		{
 		    if(pDeletionPoint == nullptr)

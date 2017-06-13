@@ -293,7 +293,7 @@ public:
 	    if(remaining_key_len < len)
 		return -1;
 	
-	    if(memcmp(tailArray, pTail, remaining_key_len) == 0)
+	    if(memcmp(tailArray, pTail, len) == 0)
 	    {
 		if(len == remaining_key_len)
 		    return 0; // The tail is equal to the remaining part of the key

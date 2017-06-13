@@ -1507,7 +1507,7 @@ void correctness_test()
    
     std::vector<std::string> numbers = {"123456789", "123456", "1234568", "123457", "123458", "012345", "0123456789"};
     boost::random::random_device gen;
-   
+   int c = -1;
     std::cout << "Numbers Generated" << std::endl;
     
     
@@ -1517,10 +1517,11 @@ void correctness_test()
     }
     
     std::cout << "Numbers Inserted" << std::endl;
-   
+  
     for(int i = 0; i < numbers.size(); ++i)
     {
-    	bool result = digitTrie.Search(numbers[i]);
+      
+    	bool result = digitTrie.SearchPrefix(numbers[i] + "1223");
     	if(!result)
     	{
     	    std::cout << "Failed to search the key: " << numbers[i] << ", at position: " << i << std::endl;
@@ -1541,7 +1542,7 @@ void correctness_test()
 	bool result = digitTrie.Search(numbers[i]);
 	if(result)
 	{
-	    std::cout << "Failed to search the key: " << numbers[i] << ", at position: " << i << std::endl;
+	    std::cout << "deletion failed. search the key: " << numbers[i] << ", at position: " << i << std::endl;
 	}
     }
  
@@ -1563,7 +1564,7 @@ void correctness_test2()
     for(int i = 0; i < knownmccmnc_list.size(); ++i)
     {
       int r = 0;
-    	bool result = digitTrie.Search(knownmccmnc_list[i],r);
+    	bool result = digitTrie.SearchLongestPrefix(knownmccmnc_list[i]+"32332",r);
     	if(!result)
     	{
     	    std::cout << "Failed to search the key: " << knownmccmnc_list[i] << ", at position: " << i << std::endl;
